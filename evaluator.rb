@@ -65,7 +65,9 @@ def substitute(variable:, body:, argument:)
   # puts "body: #{body.inspect}"
   # puts "argument: #{argument.inspect}"
   body.map do |term|
-    if term == variable
+    if term.is_a? Array
+      substitute(variable: variable, body: term, argument: argument)
+    elsif term == variable
       argument
     else
       term
@@ -109,8 +111,8 @@ def eval(exp)
       exp.delete_at(redex_index + 1)
     end
 
-    # puts "reduction step\t: #{exp.inspect}"
     print "reduction step\t: "; print_lambda(exp)
+    # puts "reduction step\t: #{exp.inspect}"
   end
 end
 
@@ -137,11 +139,8 @@ end
 # puts reader(tokenize('(\x.x) y')).inspect
 # puts eval(reader(tokenize('(\x.x) y'))).inspect
 
-# puts reader(tokenize('(\ true false and . and true false) (\ t f . t) (\ t f . f) (\ x y . x y false)')).inspect
-# puts reader(tokenize('(\ true . \ false . \ and . and true false) (\ t f . t) (\ t f . f) (\ x . \ y . x y false)')).inspect
-#
-# print_lambda(eval(reader(tokenize('(\ true . \ false . \ and . and true true) (\ t f . t) (\ t f . f) (\ x . \ y . x y false)'))))
+print_lambda(eval(reader(tokenize('(\true . \false . (\and . and true true) (\x . \y . x y false)) (\t . \f . t) (\t . \f . f)'))))
 
-print_lambda(eval(reader(tokenize('(\x.x)y'))))
+# print_lambda(eval(reader(tokenize('(\x.x)y'))))
 
 
